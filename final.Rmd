@@ -1,0 +1,297 @@
+---
+title: "Untitled"
+author: "Álvaro Miranda García"
+date: "2023-05-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+
+
+![](){width='100px'}
+
+
+
+Las cerámicas griegas que recorrieron el Mediterráneo antiguo han llamado la atención a estudiosos e investigadores por su gran interés, tanto artístico en sus imágenes y belleza; como arqueológico en su valor para datar contextos con extrema precisión y documentar los numerosos y variados contactos transmediterráneos entre comunidades a lo largo del I milenio a. C. 
+
+La presencia en masa de estas cerámicas en la Península Ibérica comienza con la colonización fenicia, llegando con distintos ritmos, pudiendo identificar varias fases en esta dinámica comercial. Lo que nos ocupa en este trabajo es el periodo de finales del s. V a. C. y primera mitad del s. IV a. C. Las cerámicas griegas de este periodo para el suroeste peninsular han sido, hasta cierto punto, ignoradas, con el trabajo hecho siendo insuficiente y/o anticuado, resultando en un vacío de información importante. Por ello resulta necesario retomar este filón con una metodología moderna, siendo este trabajo un ejemplo de ello, que sirve como complemento al Trabajo de Fin de Grado, para así conocer más sobre las propias copas áticas que llegaban a esta región. 
+
+Mediante el uso de R para realizar análisis estadísticos como la regresión logística, podremos predecir el resultado de ciertas variables asignadas a nuestro registro cerámico; en nuestro caso,veremos la relación entre la forma tipológica o la técnica, y alguna variable morfométrica como altura o diámetro de borde o base, utilizando como ejemplos la Kylix y el Lekythos, es decir, una forma abierta, como es la Kylix, y una cerrada, como es el lekythos. Analizando las medidas mediante una regresión logística, podremos predecir si un ejemplar pertenece a un grupo tipológico o a otro, de forma científica y objetiva, mediante la estadística y las matemáticas.
+
+relación entre la forma y la técnica de las copas o kylikes griegas. Las kylikes variaban enormemente en forma, predominando unas más para la técnica de Figuras Rojas y otras para el Barniz Negro. Con los resultados de la regresión logística podremos demostrar la posibilidad de establecer de forma científica y objetiva la relación entre ciertas técnicas y tipologías en la cerámica griega. La arqueología y los estudios cerámicos a menudo pecan de resultados e interpretaciones poco científicas; desde luego, nuestra disciplina se puede beneficiar de estas metodologías y de la aplicación de la estadística y las matemáticas.
+
+La base de datos que se ha elaborado para este trabajo se ha hecho con registro de kylikes y lekythoi procedentes de varios yacimientos. Para los lekythoi: Ampurias, el pecio de El Sec, Castellones de Ceal, El Pajarillo y, sobre todo, Ibiza, cuya necrópolis ha aportado uno de los mayores conjuntos de lekythoi griegos con excelentes estados de conservación. Para las kylikes: Cancho Roano, Mértola, Castro Marim, Cerro del Castillo (Fuengirola), Cástulo, Ampurias, el pecio de El Sec, así como varias piezas de Mesas de Asta, cuyo rico conjunto de cerámicas griegas estamos estudiando en el Museo Arqueológico de Jerez de la Frontera para el Trabajo de Fin de Grado. 
+
+En la base de datos se incluyen 83 muestras, con las siguientes variables:
+
+- Yacimiento
+- Forma: aquí, distinguimos entre Kylix, copas abiertas usadas para el consumo de vino; y el Lekythos, una forma cerrada utilizada para aceites y ungüentos.
+- Técnica: aquí, distinguimos entre cerámicas figuradas y cerámicas de Barniz Negro, sin imágenes.
+- Datos morfométricos, como diámetro de borde y base, altura y grosor de pared.
+
+La bibliografía consultada para la obtención de datos es la siguiente:
+Para Cancho Roano: Gracia 2003: 
+Para Mértola: Arruda et al. 1998
+Para Castro Marim: Arruda et al. 2020
+Para Cástulo
+Para Cerro del Castillo:
+Para Ampurias:
+Para El Sec: Trias 1987
+Para Mesas de Asta: elaboración propia en el museo jerezano.
+
+
+__Regresión Logística__
+
+El método que vamos a aplicar en el presente trabajo es la regresión logística, esta fue desarrollada por David Cox en 1958. La regresión logística se utiliza para predecir la clase (o categoría) de los individuos en función de una o varias variables predictoras (x). Se utiliza para modelizar un resultado binario, es decir, una variable que solo puede tener dos valores posibles: 0 o 1, sí o no etc. La regresión logística a la familia llamada: Generalized Linear Model (GLM).
+
+En nuestro caso, hemos utilizado 0 y 1 para sustituir las categorias Figurada y Barniz Negro dentro de la variable "Técnica", y Kylix y Lekythos dentro de "Forma". Con esto, podremos estimar la probabilidad de que una vasija con ciertas medidas morfométricas sea de una u otra forma, o tienda a presentar una decoración realizada con una u otra técnica. El potencial y la posibilidad de aplicaciones de esta metodología es enorme, y es una herramienta excelente para construir interpretaciones históricas de forma científica.
+
+La función para la regresión logística estándar, para predecir el resultado de una observación dada una variable predictora (x), es una curva en forma de S definida como:
+
+$$\begin{equation} p = exp(y) / [1 + exp(y)]\end{equation}$$
+Simplificada también como: 
+$$\begin{equation} p = 1/[1 + exp(-y)]\end{equation}$$
+Manipulando un poco la función, se puede demostrar que: $$\begin{equation}p/(1-p) = exp(b0 + b1*x)\end{equation}$$
+
+
+
+
+Tomando el logaritmo de ambos lados, la fórmula se convierte en una combinación lineal de predictores: $$\begin{equation}log[p/(1-p)] = b0 + b1*x\end{equation}$$
+
+Pero, ¿Por qué regresión logística?
+
+La existencia de una relación entre una variable cualitativa con dos niveles y una variable continua se puede estudiar también  mediante otros test estadísticos, como t-test. Sin embargo, la regresión logística permite también calcular la probabilidad de que la variable dependiente pertenezca a cada una de las dos categorías en función del valor que adquiera la variable independiente, que es lo que nos interesa en este caso.
+
+La regresión lineal por mínimos cuadrados también permite crear un modelo para una variable cualitativa binomial codificada como 0 y 1, pero con ella, al ser para valores extremos del predictor, se obtienen valores de Y menores que 0 o mayores que 1, y no nos da como resultado una probabilidad dentro del rango [0,1], por ello utilizamos la regresión logística.  La regresión logística transforma el valor devuelto por la regresión lineal (β0+β1X) empleando una función cuyo resultado está siempre comprendido entre 0 y 1.
+
+Antes de empezar, hay que tratar ciertos aspectos, como los logit o "log of the odds". El logit es el coeficiente proporcionado por una regresión logística en R. 
+
+Para calcular la regresión logística, utilizamos la función glm(), de Generalized Linear Model. Es necesario especificar la opción family = binomial, que indica a R que queremos ajustar la regresión logística.
+
+
+__Desarrollo__
+
+Lo primero que cabe hacer es introducir nuestra tabla, y convertirla a dataframe para poder trabajar eficazmente con ella. Los valores "Kylix", "Lekythos", "Figurada" y "Barniz Negro" ya se han renombrado como 0 y 1 para facilitar el workflow del trabajo, pero es posible recodificarlas en el propio script con la función mutate ().
+
+
+```{r}
+#Introducimos la tabla 
+library(readxl)
+copas <- read_excel("E:\\trabajo\\copas2.xlsx")
+```
+
+```{r}
+
+#Convertimos a dataframe. Los paquetes que vamos a necesitar son Tidyverse, para una sencilla manipulación y visualización de los datos; y Caret, que facilita el machine learning y el uso de métodos complejos de clasificación y regresión.
+ceramicas = as.data.frame(copas)
+is.data.frame(ceramicas)
+View (ceramicas)
+
+
+library(ISLR)
+library(tidyverse)
+library(caret)
+
+#Con el paquete DT podemos visualizar de una forma más dinámica nuestra base de datos. 
+library(DT)
+datatable(ceramicas)
+```
+
+```{r}
+
+#Ahora, creamos objetos para las variables que vamos a estudiar, así facilitamos su manejo.
+
+forma = ceramicas$Forma
+tecnica = ceramicas$Tecnica
+borde = na.omit (ceramicas$`Diam. Borde`)
+base = na.omit (ceramicas$`Diam. Base`)
+altura = na.omit (ceramicas$Altura)
+
+
+#Nos aseguramos que los vectores sean numéricos y no se registran como factor o character, los convertimos con as.numeric().
+
+borde <- as.numeric(borde)
+base <- as.numeric(base)
+altura <- as.numeric(altura)
+
+#Con la función glm () ajustamos los modelos. Primero, vamos a usar la forma como variable predictora, y el diámetro del borde como variable dependiente.
+
+modelo <- glm (forma ~ borde, data = ceramicas, family = binomial)
+
+#Con summary () obtenemos los resultados del modelo.
+summary (modelo)
+
+
+#Con anova() analizamos la tabla de desviación.
+anova(modelo)
+
+confint(object = modelo, level = 0.95)
+
+#Con la función predict() podemos, incluso, obtener una respuesta (con la opción type ="response") acerca de a qué forma pertenece cada ejemplar según su diámetro de borde.
+
+newdataborde <- data.frame(borde)
+probabilities <- modelo %>% predict(newdataborde, type = "response")
+predicted.classes1 <- ifelse(probabilities > 0.5, "Lekythos", "Kylix")
+predicted.classes1
+
+```
+
+La tabla de coeficientes muestra las estimaciones de los coeficientes beta y sus niveles de significación. Las columnas son:
+
+Estimación: el intercepto (b0) y las estimaciones del coeficiente beta asociadas a cada variable predictora.
+
+Error estándar: el error estándar de las estimaciones de los coeficientes. Representa la precisión de los coeficientes. Cuanto mayor sea el error estándar, menos confianza tendremos en la estimación.
+
+Valor z: el estadístico z, que es la estimación del coeficiente (columna 2) dividida por el error estándar de la estimación (columna 3)
+
+Pr(>|z|): El valor p correspondiente al estadístico z. Cuanto menor sea el valor p, más significativa es la estimación.
+
+Tenga en cuenta que las funciones coef() y summary() se pueden utilizar para extraer sólo los coeficientes, como se indica a continuación:
+
+Puede observarse que solo 5los 8 predictores están significativamente asociados al resultado. Estos son: embarazo, glucosa, presión, masa y pedigrí.
+
+
+El coeficiente estimado de la variable glucosa es b = 0,045, que es positivo. Esto significa que un aumento de la glucosa se asocia a un aumento de la probabilidad de ser diabético positivo. Sin embargo, el coeficiente de la variable presión es b = -0,007, que es negativo. Esto significa que un aumento de la presión arterial se asociará con una disminución de la probabilidad de ser diabetes-positivo.
+
+Un concepto importante que hay que entender para interpretar los coeficientes beta logísticos es la odds ratio. Una odds ratio mide la asociación entre una variable predictora (x) y la variable de resultado (y). Representa la proporción de probabilidades de que se produzca un suceso (suceso = 1) dada la presencia del predictor x (x = 1), comparada con las probabilidades de que se produzca el suceso en ausencia de ese predictor (x = 0).
+
+Para un predictor determinado (digamos x1), el coeficiente beta asociado (b1) en la función de regresión logística corresponde al logaritmo de la razón de probabilidades para ese predictor.
+
+Si el cociente de probabilidades es 2, las probabilidades de que se produzca el acontecimiento (acontecimiento = 1) son dos veces mayores cuando el predictor x está presente (x = 1) que cuando x está ausente (x = 0).
+
+Por ejemplo, el coeficiente de regresión para la glucosa es 0,042. Esto indica que un aumento de una unidad en la concentración de glucosa aumentará las probabilidades de ser diabetes-positivo en exp(0,042) 1,04 veces.
+
+De los resultados de la regresión logística se desprende que algunas variables (tríceps, insulina y edad) no son estadísticamente significativas. Mantenerlas en el modelo puede contribuir al sobreajuste. Por lo tanto, deben eliminarse. Esto puede hacerse automáticamente utilizando técnicas estadísticas, incluidos los métodos de regresión por pasos y de regresión penalizada. Estos métodos se describen en la siguiente sección. En resumen, consisten en seleccionar un modelo óptimo con un conjunto reducido de variables, sin comprometer la curación del modelo.
+
+
+
+
+```{r}
+
+
+
+#Ahora, utilizamos la altura como variable dependiente
+
+modelo1 <- glm (forma ~ altura, data = ceramicas, family = binomial)
+summary(modelo1)
+
+
+confint(object = modelo1, level = 0.95)
+
+
+newdataaltura <- data.frame(altura)
+probabilities <- modelo %>% predict(newdataaltura, type = "response")
+predicted.classes2 <- ifelse(probabilities > 0.5, "Lekythos", "Kylix")
+predicted.classes2
+
+```
+
+
+Ahora que hemos hecho regresiones logísticas simples, vamos a probar con una múltiple.
+
+```{r}
+
+modelo2 <- glm (forma ~ altura + borde, data = ceramicas, family = binomial)
+summary(modelo2)
+
+
+confint(object = modelo1, level = 0.95)
+
+newdatamult <- data.frame(altura + borde)
+probabilities <- modelo2 %>% predict(newdatamult, type = "response")
+predicted.classes2 <- ifelse(probabilities > 0.5, "Lekythos", "Kylix")
+predicted.classes2
+```
+En este predict () vemos como, de nuevo, predice correctamente la tipología en función de la altura y el borde. Los ejemplares que dan como resultado NA es debido a que para ellos desconocemos alguna de las dos variables, altura o diámetro de borde. Vamos a probar sumando diámetro de base.
+
+```{r}
+modelo3 <- glm (forma ~ altura + borde + base, data = ceramicas, family = binomial)
+summary(modelo3)
+
+
+coef(modelo3)
+summary(modelo3)$coef
+
+
+newdatamult2 <- data.frame(altura + borde + base)
+probabilities <- modelo3 %>% predict(newdatamult2, type = "response")
+predicted.classes3 <- ifelse(probabilities > 0.5, "Lekythos", "Kylix")
+predicted.classes3
+```
+Para aquellos ejemplares que se encuentran completos y disponemos de altura y diámetro de borde y base, la predicción es, nuevamente, acertada.
+
+```{r}
+
+library(ggplot2)
+ggplot(data = ceramicas, aes(x = forma, y = borde)) +
+  geom_point(aes(color = as.factor(borde)), shape = 1) + 
+  stat_function(fun = function(x){predict(modelo,
+                                          newdata = data.frame(forma = x),
+                                          type = "response")}) +
+  theme_bw() +
+  labs(title = "Regresión logística",
+       y = "Probabilidad Altura") +
+  theme(legend.position = "none")
+
+
+
+
+
+
+
+ggplot(data = ceramicas, aes(x = forma, y = altura)) +
+  geom_point(aes(color = as.factor(altura)), shape = 1) + 
+  stat_function(fun = function(x){predict(modelo,
+                                          newdata = data.frame(forma = x),
+                                          type = "response")}) +
+  theme_bw() +
+  labs(title = "Regresión logística",
+       y = "Probabilidad Altura") +
+  theme(legend.position = "none")
+
+      
+
+
+as.numeric(borde)
+
+plot(forma ~ borde, ceramicas, col = "darkblue",
+     main = "Modelo regresión logística",
+     ylab = "P(forma1|borde)",
+     xlab = "ceramicas", pch = "I")
+# type = "response" devuelve las predicciones en forma de probabilidad en lugar de en log_ODDs
+curve(predict(modelo, data.frame(borde = x), type = "response"),
+      col = "firebrick", lwd = 2.5, add = TRUE)
+
+  
+
+
+plot(forma ~ altura, ceramicas, col = "darkblue",
+     main = "Modelo regresión logística",
+     ylab = "P(forma1|altura)",
+     xlab = "ceramicas", pch = "I")
+# type = "response" devuelve las predicciones en forma de probabilidad en lugar de en log_ODDs
+curve(predict(modelo1, data.frame(altura = x), type = "response"),
+      col = "firebrick", lwd = 2.5, add = TRUE)
+
+
+
+
+
+library(ggplot2)
+
+ggplot(data = ceramicas, aes(x = forma, y = borde, color = forma)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.1) +
+  theme_bw() +
+  theme(legend.position = "null")
+
+
+```
+
+
+
+
+```{r}
